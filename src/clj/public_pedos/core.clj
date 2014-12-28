@@ -4,6 +4,7 @@
             [ring.adapter.jetty :as ring]
             [ring.middleware.json :as middleware]
             [ring.middleware.session :as sessions]
+            [ring.middleware.format :refer [wrap-restful-format]]
             [ring.util.response :refer [resource-response response]]
             [compojure.handler :as handler]
             [cheshire.core :refer :all]
@@ -61,7 +62,14 @@
   (assoc-in request [:headers "Authorization"] (str "Bearer " (user-access-token request))))
 
 (defn list-apps [token]
-  (http-client/get "https://api.heroku.com/apps" {:headers {"Authorization" (str "Bearer " token)}}))
+  (http-client/get "https://api.heroku.com/apps" {:headers {"Authorization" (str "Bearer " token)} :as :json}))
+
+(defn apps-name [apps]
+  (map (fn [it] (:name it)) apps))
+
+(defn all-apps [request]
+  (:body (list-apps (user-access-token request))))
+
 
 (defroutes app-routes
   (GET "/" [] (resource-response "index.html" {:root "public"}))
@@ -75,8 +83,7 @@
   (GET "/api/apps" request
        (friend/authorize #{::user}
                          (do 
-                           (println "Getting apps for user...")
-                           (response (generate-string (list-apps (user-access-token request)))))))
+                           (response (:body (list-apps (user-access-token request)))))))
   (friend/logout (ANY "/logout" request (ring.util.response/redirect "/")))
   (route/resources "/"))
 
@@ -90,7 +97,8 @@
                        {:client-config client-config
                         :uri-config uri-config
                         :credential-fn credential-fn})]})
-        handler/site))))
+        handler/site
+        (wrap-restful-format)))))
 
 (defn -main []
   (ring/run-jetty #'app {:port 3000 :join? false}))

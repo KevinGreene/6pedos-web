@@ -8,7 +8,7 @@
 
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/clojurescript "0.0-2371" :scope "provided"]
-                 [ring "1.3.1"]
+                 [ring "1.3.1" :exclusions [org.eclipse.jetty/jetty-http org.eclipse.jetty/jetty-continuation]]
                  [compojure "1.2.0"]
                  [ring/ring-json "0.1.2"]
                  [ring/ring-jetty-adapter "1.2.1"]
@@ -17,12 +17,17 @@
                  [environ "1.0.0"]
                  [cheshire "5.3.1"]
                  [com.cemerick/friend "0.2.0" :exclusions [ring/ring-core]]
-                 [friend-oauth2 "0.1.1" :exclusions [org.apache.httpcomponents/httpcore]]
+                 [friend-oauth2 "0.1.1" :exclusions [commons-logging org.apache.httpcomponents/httpcore]]
                  [domina "1.0.3-SNAPSHOT"]
+                 [prismatic/dommy "1.0.0"]
+                 [reagent "0.5.0-alpha"]
                  [cljs-ajax "0.3.3"]
                  [cljs-http "0.1.2" :exclusions [org.clojure/clojure]]
-                 [ring-middleware-format "0.4.0"]]
+                 [org.clojure/core.cache "0.6.4"]
+                 [org.clojure/core.async "0.1.346.0-17112a-alpha"]
+                 [ring-middleware-format "0.4.0" :exclusions [hiccup org.eclipse.jetty/jetty-http org.eclipse.jetty/jetty-continuation]]]
 
+  :repl-options {:init-ns reagent-example.repl}
   
   :plugins [[lein-cljsbuild "1.0.3"]
             [lein-ring "0.8.7"]
@@ -31,7 +36,8 @@
   :cljsbuild {:builds
               {:dev {:source-paths ["src/cljs"]
                      :compiler
-                     {:pretty-print true :output-to "resources/public/js/app.js"}}
+                     {:preamble ["reagent/react.js"]
+                      :pretty-print true :output-to "resources/public/js/app.js"}}
                :prod {:source-paths ["src/cljs"]
                       :compiler
                       {:optimizations :advanced
