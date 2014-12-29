@@ -7,7 +7,6 @@
 (defn error-handler [{:keys [status status-text]}]
   (.log js/console (str "something bad happend: " status " " status-text)))
 
-
 (def state (reagent/atom {:doc {} :saved? false}))
 
 (defn set-value! [id value]
@@ -23,9 +22,10 @@
             (set-value! id (->> @selections
                                 (filter second)
                                 (map first))))]
-    [:li {:class (str "list-group-item"
-                      (if (k @selections) " active"))
+    [:li {:class (str "list-group-item")
           :on-click handle-click!}
+      [:span {:class (str 
+                      (if (k @selections) "glyphicon glyphicon-ok selected"))}]
      v]))
 
 (defn selection-list [id label items]
@@ -43,7 +43,12 @@
 (defn home [heroku-apps]
   [:div 
    [selection-list :heroku-apps "My Heroku Apps" 
-    heroku-apps]])
+    heroku-apps]
+   [:p]
+   [:button {:type "Submit"
+              :class "btn btn-primary"
+              :onClick #(.log js/console (clj->js @state))}
+    "Save"]])
 
 
 (defn render-app-name [heroku-app]

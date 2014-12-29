@@ -14,7 +14,17 @@
             (cemerick.friend [workflows :as workflows]
                              [credentials :as creds])
             [environ.core :refer [env]]
-            [clj-http.client :as http-client]))
+            [clj-http.client :as http-client]
+            [somnium.congomongo :as cm]
+            [clojure.set :refer :all]))
+
+(def conn 
+  (cm/make-connection 
+   (env :db-name)
+   :host (env :db-host)
+   :port (env :db-port)))
+
+(defn authenticate-mongo [] (cm/authenticate conn (env :db-user) (env :db-password)))
 
 (defn credential-fn [token]
   {:identity token :roles #{::user}})
@@ -47,7 +57,7 @@
                           :query {:client_id (:client-id client-config)
                                   :response_type "code"
                                   :redirect_uri callback-url
-                                  :scope "read"}}
+                                  :scope "read,identity"}}
   :access-token-uri {:url token-url
                      :query {:client_id (:client-id client-config)
                              :client_secret (:client-secret client-config)
@@ -70,6 +80,25 @@
 (defn all-apps [request]
   (:body (list-apps (user-access-token request))))
 
+(defn user-heroku-apps [user-info]
+  (cm/fetch-one :user_heroku_apps :where {:heroku_id (:id user-info)}))
+
+(defn save-user-info [user-info]
+  (cm/insert! :user_heroku_apps user-info))
+
+(defn- fetch-user-heroku-info [token]
+  (http-client/get "https://api.heroku.com/account" {:headers {"Authorization" (str "Bearer " token)} :as :json}))
+
+(defn user-heroku-info [token]
+  (rename-keys 
+   (select-keys 
+    (->> token
+         (fetch-user-heroku-info)
+         (:body))
+    [:id :email])
+   {:id :heroku-id})
+ )
+
 
 (defroutes app-routes
   (GET "/" [] (resource-response "index.html" {:root "public"}))
@@ -78,8 +107,15 @@
          (resource-response "secured.html" {:root "public"})))
   (GET "/secured" request
        (friend/authorize #{::user}
-                         (do
-                           (resource-response "secured.html" {:root "public"}))))
+                         (let [token (user-access-token request)
+                               heroku-info (user-heroku-info token)
+                               user-info (user-heroku-apps heroku-info)]
+                           (do
+                           (println "User apps in mongo? " user-info)
+                           (if (nil? user-info)
+                             (save-user-info heroku-info))
+                           (resource-response "secured.html" {:root "public"}))
+                        )))
   (GET "/api/apps" request
        (friend/authorize #{::user}
                          (do 
@@ -101,6 +137,9 @@
         (wrap-restful-format)))))
 
 (defn -main []
+  (cheshire.generate/add-encoder org.bson.types.ObjectId cheshire.generate/encode-str)
+  (cm/set-connection! conn)
+  (authenticate-mongo)
   (ring/run-jetty #'app {:port 3000 :join? false}))
 
 

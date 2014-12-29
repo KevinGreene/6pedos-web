@@ -12,6 +12,7 @@
                  [compojure "1.2.0"]
                  [ring/ring-json "0.1.2"]
                  [ring/ring-jetty-adapter "1.2.1"]
+                 [congomongo "0.4.4"]
                  [enlive "1.1.5"]
                  [figwheel "0.1.4-SNAPSHOT"]
                  [environ "1.0.0"]

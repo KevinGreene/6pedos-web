@@ -64395,11 +64395,11 @@ goog.require("reagent.core");
 goog.require("ajax.core");
 goog.require("domina.css");
 goog.require("domina");
-app.error_handler = function error_handler(p__6469) {
-  var map__6471 = p__6469;
-  var map__6471__$1 = cljs.core.seq_QMARK_.call(null, map__6471) ? cljs.core.apply.call(null, cljs.core.hash_map, map__6471) : map__6471;
-  var status_text = cljs.core.get.call(null, map__6471__$1, new cljs.core.Keyword(null, "status-text", "status-text", -1834235478));
-  var status = cljs.core.get.call(null, map__6471__$1, new cljs.core.Keyword(null, "status", "status", -1997798413));
+app.error_handler = function error_handler(p__6667) {
+  var map__6669 = p__6667;
+  var map__6669__$1 = cljs.core.seq_QMARK_.call(null, map__6669) ? cljs.core.apply.call(null, cljs.core.hash_map, map__6669) : map__6669;
+  var status_text = cljs.core.get.call(null, map__6669__$1, new cljs.core.Keyword(null, "status-text", "status-text", -1834235478));
+  var status = cljs.core.get.call(null, map__6669__$1, new cljs.core.Keyword(null, "status", "status", -1997798413));
   return console.log("something bad happend: " + cljs.core.str.cljs$core$IFn$_invoke$arity$1(status) + " " + cljs.core.str.cljs$core$IFn$_invoke$arity$1(status_text));
 };
 app.state = reagent.core.atom.call(null, new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "doc", "doc", 1913296891), cljs.core.PersistentArrayMap.EMPTY, new cljs.core.Keyword(null, "saved?", "saved?", -2027163192), false], null));
@@ -64415,40 +64415,41 @@ app.list_item = function list_item(id, k, v, selections) {
     cljs.core.swap_BANG_.call(null, selections, cljs.core.update_in, new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [k], null), cljs.core.not);
     return app.set_value_BANG_.call(null, id, cljs.core.map.call(null, cljs.core.first, cljs.core.filter.call(null, cljs.core.second, cljs.core.deref.call(null, selections))));
   };
-  return new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "li", "li", 723558921), new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "class", "class", -2030961996), "list-group-item" + cljs.core.str.cljs$core$IFn$_invoke$arity$1(cljs.core.truth_(k.call(null, cljs.core.deref.call(null, selections))) ? " active" : null), new cljs.core.Keyword(null, "on-click", "on-click", 1632826543), handle_click_BANG_], null), v], null);
+  return new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "li", "li", 723558921), new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "class", "class", -2030961996), "list-group-item", new cljs.core.Keyword(null, "on-click", "on-click", 1632826543), handle_click_BANG_], null), new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "span", "span", 1394872991), new cljs.core.PersistentArrayMap(null, 
+  1, [new cljs.core.Keyword(null, "class", "class", -2030961996), "" + cljs.core.str.cljs$core$IFn$_invoke$arity$1(cljs.core.truth_(k.call(null, cljs.core.deref.call(null, selections))) ? "glyphicon glyphicon-ok selected" : null)], null)], null), v], null);
 };
 app.selection_list = function selection_list(id, label, items) {
-  var selections = reagent.core.atom.call(null, cljs.core.into.call(null, cljs.core.PersistentArrayMap.EMPTY, cljs.core.map.call(null, function(p__6482) {
-    var vec__6483 = p__6482;
-    var k = cljs.core.nth.call(null, vec__6483, 0, null);
+  var selections = reagent.core.atom.call(null, cljs.core.into.call(null, cljs.core.PersistentArrayMap.EMPTY, cljs.core.map.call(null, function(p__6680) {
+    var vec__6681 = p__6680;
+    var k = cljs.core.nth.call(null, vec__6681, 0, null);
     return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [k, false], null);
   }, items)));
   return function(selections) {
     return function() {
       return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "div.row.container", "div.row.container", -2055788712), new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "div.col-md5", "div.col-md5", 1639759017), new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "div.row", "div.row", 133678515), function() {
         var iter__4379__auto__ = function(selections) {
-          return function iter__6484(s__6485) {
+          return function iter__6682(s__6683) {
             return new cljs.core.LazySeq(null, function(selections) {
               return function() {
-                var s__6485__$1 = s__6485;
+                var s__6683__$1 = s__6683;
                 while (true) {
-                  var temp__4126__auto__ = cljs.core.seq.call(null, s__6485__$1);
+                  var temp__4126__auto__ = cljs.core.seq.call(null, s__6683__$1);
                   if (temp__4126__auto__) {
-                    var s__6485__$2 = temp__4126__auto__;
-                    if (cljs.core.chunked_seq_QMARK_.call(null, s__6485__$2)) {
-                      var c__4377__auto__ = cljs.core.chunk_first.call(null, s__6485__$2);
+                    var s__6683__$2 = temp__4126__auto__;
+                    if (cljs.core.chunked_seq_QMARK_.call(null, s__6683__$2)) {
+                      var c__4377__auto__ = cljs.core.chunk_first.call(null, s__6683__$2);
                       var size__4378__auto__ = cljs.core.count.call(null, c__4377__auto__);
-                      var b__6487 = cljs.core.chunk_buffer.call(null, size__4378__auto__);
+                      var b__6685 = cljs.core.chunk_buffer.call(null, size__4378__auto__);
                       if (function() {
-                        var i__6486 = 0;
+                        var i__6684 = 0;
                         while (true) {
-                          if (i__6486 < size__4378__auto__) {
-                            var vec__6490 = cljs.core._nth.call(null, c__4377__auto__, i__6486);
-                            var k = cljs.core.nth.call(null, vec__6490, 0, null);
-                            var v = cljs.core.nth.call(null, vec__6490, 1, null);
-                            cljs.core.chunk_append.call(null, b__6487, new cljs.core.PersistentVector(null, 5, 5, cljs.core.PersistentVector.EMPTY_NODE, [app.list_item, id, k, v, selections], null));
-                            var G__6492 = i__6486 + 1;
-                            i__6486 = G__6492;
+                          if (i__6684 < size__4378__auto__) {
+                            var vec__6688 = cljs.core._nth.call(null, c__4377__auto__, i__6684);
+                            var k = cljs.core.nth.call(null, vec__6688, 0, null);
+                            var v = cljs.core.nth.call(null, vec__6688, 1, null);
+                            cljs.core.chunk_append.call(null, b__6685, new cljs.core.PersistentVector(null, 5, 5, cljs.core.PersistentVector.EMPTY_NODE, [app.list_item, id, k, v, selections], null));
+                            var G__6690 = i__6684 + 1;
+                            i__6684 = G__6690;
                             continue;
                           } else {
                             return true;
@@ -64456,15 +64457,15 @@ app.selection_list = function selection_list(id, label, items) {
                           break;
                         }
                       }()) {
-                        return cljs.core.chunk_cons.call(null, cljs.core.chunk.call(null, b__6487), iter__6484.call(null, cljs.core.chunk_rest.call(null, s__6485__$2)));
+                        return cljs.core.chunk_cons.call(null, cljs.core.chunk.call(null, b__6685), iter__6682.call(null, cljs.core.chunk_rest.call(null, s__6683__$2)));
                       } else {
-                        return cljs.core.chunk_cons.call(null, cljs.core.chunk.call(null, b__6487), null);
+                        return cljs.core.chunk_cons.call(null, cljs.core.chunk.call(null, b__6685), null);
                       }
                     } else {
-                      var vec__6491 = cljs.core.first.call(null, s__6485__$2);
-                      var k = cljs.core.nth.call(null, vec__6491, 0, null);
-                      var v = cljs.core.nth.call(null, vec__6491, 1, null);
-                      return cljs.core.cons.call(null, new cljs.core.PersistentVector(null, 5, 5, cljs.core.PersistentVector.EMPTY_NODE, [app.list_item, id, k, v, selections], null), iter__6484.call(null, cljs.core.rest.call(null, s__6485__$2)));
+                      var vec__6689 = cljs.core.first.call(null, s__6683__$2);
+                      var k = cljs.core.nth.call(null, vec__6689, 0, null);
+                      var v = cljs.core.nth.call(null, vec__6689, 1, null);
+                      return cljs.core.cons.call(null, new cljs.core.PersistentVector(null, 5, 5, cljs.core.PersistentVector.EMPTY_NODE, [app.list_item, id, k, v, selections], null), iter__6682.call(null, cljs.core.rest.call(null, s__6683__$2)));
                     }
                   } else {
                     return null;
@@ -64481,7 +64482,10 @@ app.selection_list = function selection_list(id, label, items) {
   }(selections);
 };
 app.home = function home(heroku_apps) {
-  return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "div", "div", 1057191632), new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [app.selection_list, new cljs.core.Keyword(null, "heroku-apps", "heroku-apps", -906880979), "My Heroku Apps", heroku_apps], null)], null);
+  return new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "div", "div", 1057191632), new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [app.selection_list, new cljs.core.Keyword(null, "heroku-apps", "heroku-apps", -906880979), "My Heroku Apps", heroku_apps], null), new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "p", "p", 151049309)], null), 
+  new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "button", "button", 1456579943), new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null, "type", "type", 1174270348), "Submit", new cljs.core.Keyword(null, "class", "class", -2030961996), "btn btn-primary", new cljs.core.Keyword(null, "onClick", "onClick", -1991238530), function() {
+    return console.log(cljs.core.clj__GT_js.call(null, cljs.core.deref.call(null, app.state)));
+  }], null), "Save"], null)], null);
 };
 app.render_app_name = function render_app_name(heroku_app) {
   return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "li", "li", 723558921), new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "p", "p", 151049309), (new cljs.core.Keyword(null, "name", "name", 1843675177)).cljs$core$IFn$_invoke$arity$1(heroku_app)], null)], null);
