@@ -81,7 +81,7 @@
   (:body (list-apps (user-access-token request))))
 
 (defn user-heroku-apps [user-info]
-  (cm/fetch-one :user_heroku_apps :where {:heroku_id (:id user-info)}))
+  (cm/fetch-one :user_heroku_apps :where {:heroku-id (:heroku-id user-info)}))
 
 (defn save-user-info [user-info]
   (cm/insert! :user_heroku_apps user-info))
