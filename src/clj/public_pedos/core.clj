@@ -65,6 +65,8 @@
                              :state csrf-token
                              :redirect_uri (format-config-uri client-config)}}})
 
+(defn new-uuid [] (.toString (java.util.UUID/randomUUID)))
+
 (defn user-access-token [request]
   (get-in (friend/current-authentication request) [:identity :access-token]))
 
@@ -111,9 +113,8 @@
                                heroku-info (user-heroku-info token)
                                user-info (user-heroku-apps heroku-info)]
                            (do
-                           (println "User apps in mongo? " user-info)
                            (if (nil? user-info)
-                             (save-user-info heroku-info))
+                             (save-user-info (assoc heroku-info :app-id (new-uuid))))
                            (resource-response "secured.html" {:root "public"}))
                         )))
   (GET "/api/apps" request
