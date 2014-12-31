@@ -16,15 +16,9 @@
             [environ.core :refer [env]]
             [clj-http.client :as http-client]
             [somnium.congomongo :as cm]
-            [clojure.set :refer :all]))
+            [clojure.set :refer :all]
+            [public-pedos.user-db :as user-db]))
 
-(def conn 
-  (cm/make-connection 
-   (env :db-name)
-   :host (env :db-host)
-   :port (env :db-port)))
-
-(defn authenticate-mongo [] (cm/authenticate conn (env :db-user) (env :db-password)))
 
 (defn credential-fn [token]
   {:identity token :roles #{::user}})
@@ -82,11 +76,6 @@
 (defn all-apps [request]
   (:body (list-apps (user-access-token request))))
 
-(defn user-heroku-apps [user-info]
-  (cm/fetch-one :user_heroku_apps :where {:heroku-id (:heroku-id user-info)}))
-
-(defn save-user-info [user-info]
-  (cm/insert! :user_heroku_apps user-info))
 
 (defn- fetch-user-heroku-info [token]
   (http-client/get "https://api.heroku.com/account" {:headers {"Authorization" (str "Bearer " token)} :as :json}))
@@ -111,16 +100,25 @@
        (friend/authorize #{::user}
                          (let [token (user-access-token request)
                                heroku-info (user-heroku-info token)
-                               user-info (user-heroku-apps heroku-info)]
+                               user-info (user-db/user-heroku-apps heroku-info)]
                            (do
                            (if (nil? user-info)
-                             (save-user-info (assoc heroku-info :app-id (new-uuid))))
+                             (user-db/save-user-info! (assoc heroku-info :app-id (new-uuid))))
                            (resource-response "secured.html" {:root "public"}))
                         )))
   (GET "/api/apps" request
        (friend/authorize #{::user}
                          (do 
                            (response (:body (list-apps (user-access-token request)))))))
+
+  (GET "/api/key", request
+       (friend/authorize #{::user}
+                         (let [token (user-access-token request)
+                               heroku-info (user-heroku-info token)
+                               user-info (user-db/user-heroku-apps heroku-info)]
+                           (if (not (nil? user-info))
+                             (response (:body (user-db/user-api-key user-info)))
+                             (response (:body nil))))))
   (friend/logout (ANY "/logout" request (ring.util.response/redirect "/")))
   (route/resources "/"))
 
@@ -139,8 +137,8 @@
 
 (defn -main []
   (cheshire.generate/add-encoder org.bson.types.ObjectId cheshire.generate/encode-str)
-  (cm/set-connection! conn)
-  (authenticate-mongo)
+  (cm/set-connection! user-db/conn)
+  (user-db/authenticate-mongo)
   (ring/run-jetty #'app {:port 3000 :join? false}))
 
 
