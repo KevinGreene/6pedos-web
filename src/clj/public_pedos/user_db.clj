@@ -19,3 +19,5 @@
 (defn user-api-key [user-info]
   (:app-id (user-heroku-apps user-info)))
 
+(defn set-connection! []
+  (cm/set-connection! conn))
