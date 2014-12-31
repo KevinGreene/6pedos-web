@@ -14,4 +14,4 @@ FIXME: explanation
 
 Copyright © 2014
 
-Distributed under the [Eclipse Public License](http://www.eclipse.org/legal/epl-v10.html) either version 1.0.
+Distributed under the [Eclipse Public License version 1.0](http://www.eclipse.org/legal/epl-v10.html).
