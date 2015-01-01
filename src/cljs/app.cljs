@@ -57,6 +57,10 @@
 (defn app-names [lst]
   (map (fn [it] [(symbol (str ":" (:name it))) (str (:name it))]) lst))
 
+(defn loading-message []
+  [:div
+   [:h2 "Loading"]])
+
 (defn fetch-apps-handler [response]
   (do
     (reagent/render-component [home (app-names response)]
@@ -74,5 +78,7 @@
 (defn ^:export init []
   (do
     (.log js/console (str "Hello from cljs!!"))
+    (reagent/render-component [loading-message]
+                              (.getElementById js/document "apps-list"))
     (fetch-apps)))
 
