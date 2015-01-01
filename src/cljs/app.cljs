@@ -69,15 +69,14 @@
 
 (defn fetch-apps []
   (GET "/api/apps" 
-       :response-format :json
-       :format (json-request-format)
+       :response-format :edn
+       :format (edn-request-format)
        :handler fetch-apps-handler
        :error-handler error-handler
-       :keywords? true))
+       ))
 
 (defn ^:export init []
   (do
-    (.log js/console (str "Hello from cljs!!"))
     (reagent/render-component [loading-message]
                               (.getElementById js/document "apps-list"))
     (fetch-apps)))

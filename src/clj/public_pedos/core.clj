@@ -7,6 +7,7 @@
             [ring.middleware.format :refer [wrap-restful-format]]
             [ring.util.response :refer [resource-response response]]
             [compojure.handler :as handler]
+            [noir.response :refer [edn]]
             [cheshire.core :refer :all]
             [cemerick.friend :as friend]
             [friend-oauth2.workflow :as oauth2]
@@ -65,7 +66,7 @@
   (GET "/api/apps" request
        (friend/authorize #{::user}
                          (do 
-                           (response (:body (list-apps (user-access-token request)))))))
+                           (edn (:body (list-apps (user-access-token request)))))))
   (GET "/api/key", request
        (friend/authorize #{::user}
                          (let [token (user-access-token request)

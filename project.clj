@@ -24,6 +24,7 @@
                  [reagent "0.5.0-alpha"]
                  [cljs-ajax "0.3.3"]
                  [cljs-http "0.1.2" :exclusions [org.clojure/clojure]]
+                 [lib-noir "0.9.5"]
                  [org.clojure/core.cache "0.6.4"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
                  [ring-middleware-format "0.4.0" :exclusions [hiccup org.eclipse.jetty/jetty-http org.eclipse.jetty/jetty-continuation]]]
