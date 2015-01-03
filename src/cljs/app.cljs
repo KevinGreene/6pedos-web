@@ -1,8 +1,10 @@
 (ns app
   (:require [domina :refer [by-class by-id append! nodes sel attr destroy-children!]]
             [domina.css :refer [sel]]
-            [ajax.core :refer [GET edn-response-format edn-request-format json-request-format json-response-format]]
+            [ajax.core :refer [GET edn-response-format edn-request-format]]
             [reagent.core :as reagent]))
+
+(def api-key (atom 0))
 
 (defn error-handler [{:keys [status status-text]}]
   (.log js/console (str "something bad happend: " status " " status-text)))
@@ -22,11 +24,14 @@
             (set-value! id (->> @selections
                                 (filter second)
                                 (map first))))]
-    [:li {:class (str "list-group-item")
-          :on-click handle-click!}
-      [:span {:class (str 
-                      (if (k @selections) "glyphicon glyphicon-ok selected"))}]
-     v]))
+    [:tr 
+     [:td
+      [:h2
+       {:on-click handle-click!}
+       [:i {:class (str 
+                      (if (k @selections) "fa fa-check"))}]  
+      v]
+     ]]))
 
 (defn selection-list [id label items]
   (let [selections (->> items (map (fn [[k]] [k false])) (into {}) reagent/atom)]
@@ -34,11 +39,14 @@
       [:div.row.container
        [:div.col-md5
         [:div.row
-         (for [[k v] items]
-           (do
-             [list-item id k v selections]
-             )
-           )]]])))
+         [:table {:class "pure-table"}
+          [:thead
+           [:tr
+            [:td "My Heroku Apps"]]]
+          [:tbody 
+           (for [[k v] items]
+             (do
+               [list-item id k v selections]))]]]]])))
 
 (defn home [heroku-apps]
   [:div 
@@ -46,7 +54,7 @@
     heroku-apps]
    [:p]
    [:button {:type "Submit"
-              :class "btn btn-primary"
+              :class "pure-button pure-button-primary"
               :onClick #(.log js/console (clj->js @state))}
     "Save"]])
 
@@ -66,6 +74,16 @@
     (reagent/render-component [home (app-names response)]
                               (.getElementById js/document "apps-list"))
     ))
+(defn -save-api-key! [response]
+  (reset! api-key response)
+  (.log js/console (str "api key " (clj->js @api-key)))
+  (@api-key))
+
+(defn fetch-api-key []
+  (GET "/api/key"
+       :response-format :edn
+       :hander -save-api-key!
+       :error-handler error-handler))
 
 (defn fetch-apps []
   (GET "/api/apps" 
@@ -79,5 +97,6 @@
   (do
     (reagent/render-component [loading-message]
                               (.getElementById js/document "apps-list"))
+    (fetch-api-key)
     (fetch-apps)))
 

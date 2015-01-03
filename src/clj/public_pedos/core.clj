@@ -73,8 +73,8 @@
                                heroku-info (user-heroku-info token)
                                user-info (user-db/user-heroku-apps heroku-info)]
                            (if (not (nil? user-info))
-                             (response (:body (user-db/user-api-key user-info)))
-                             (response (:body nil))))))
+                             (edn (user-db/user-api-key user-info))
+                             (edn nil)))))
   (friend/logout (ANY "/logout" request (ring.util.response/redirect "/")))
   (route/resources "/"))
 
