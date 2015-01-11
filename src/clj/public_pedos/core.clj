@@ -63,7 +63,8 @@
                              (user-db/save-user-info! (assoc heroku-info :app-id (new-uuid))))
                            (resource-response "secured.html" {:root "public"}))
                         )))
-  (GET "/api/apps" request
+  (GET "/api/apps/:api-key" request
+       (println (str "\nRequest: ", (get-in request [:params :api-key])))
        (friend/authorize #{::user}
                          (do 
                            (edn (:body (list-apps (user-access-token request)))))))

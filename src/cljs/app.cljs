@@ -2,9 +2,12 @@
   (:require [domina :refer [by-class by-id append! nodes sel attr destroy-children!]]
             [domina.css :refer [sel]]
             [ajax.core :refer [GET edn-response-format edn-request-format]]
-            [reagent.core :as reagent]))
+            [reagent.core :as reagent]
+            [cljs.core.async :as async :refer [close! chan]])
+  (:require-macros [cljs.core.async.macros :refer [go]]))
 
 (def api-key (atom 0))
+(def api-key-chan (chan))
 
 (defn error-handler [{:keys [status status-text]}]
   (.log js/console (str "something bad happend: " status " " status-text)))
@@ -74,29 +77,49 @@
     (reagent/render-component [home (app-names response)]
                               (.getElementById js/document "apps-list"))
     ))
-(defn -save-api-key! [response]
-  (reset! api-key response)
-  (.log js/console (str "api key " (clj->js @api-key)))
-  (@api-key))
+(defn save-api-key! [response]
+   (go
+       (reset! api-key response)
+       (.log js/console (str "api key " (clj->js @api-key)))
+       (>! api-key-chan response)
+       (close! api-key-chan)
+      ))
+
 
 (defn fetch-api-key []
   (GET "/api/key"
        :response-format :edn
-       :hander -save-api-key!
+       :format (edn-request-format)
+       :handler save-api-key!
        :error-handler error-handler))
 
-(defn fetch-apps []
-  (GET "/api/apps" 
+(defn fetch-apps [api-key]
+  (GET (str "/api/apps/" api-key ) 
        :response-format :edn
        :format (edn-request-format)
        :handler fetch-apps-handler
-       :error-handler error-handler
-       ))
+       :error-handler error-handler))
+
+(defn render-key [key]
+  [:h1 key])
+
+(defn -render-key [key]
+  (reagent/render-component [render-key (key)] (.getElementById js/document "apps-list")))
+
+(defn fun-esa []
+  (GET "http://esa.local:9200"
+       :handler (fn [response] (.log js/console response)))
+)
+
+(defn start []
+  (go
+    (fun-esa)
+    (fetch-api-key)
+    (fetch-apps (<! api-key-chan))))
 
 (defn ^:export init []
   (do
     (reagent/render-component [loading-message]
                               (.getElementById js/document "apps-list"))
-    (fetch-api-key)
-    (fetch-apps)))
+    (start)))
 
