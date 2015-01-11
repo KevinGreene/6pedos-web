@@ -25,39 +25,32 @@
 (defn get-value [id]
   (get-in @state [:doc id]))
 
+
 (defn list-item [id k v selections]
   (letfn [(handle-click! []
             (swap! selections update-in [k] not)
             (set-value! id (->> @selections
                                 (filter second)
                                 (map first))))]
-    [:tr 
-     [:td
-      [:h2
+    [:div {:class "pure-u-1 pure-u-md-1-3"}
+     [:p
+      [:h4
        {:on-click handle-click!}
-       [:i {:class (str 
-                      (if (k @selections) "fa fa-check"))}]  
-      v]
-     ]]))
+       [:i {:class (str (if (k @selections) "fa fa-check"))}]
+       v]
+      ]]))
 
 (defn selection-list [id label items]
   (let [selections (->> items (map (fn [[k]] [k false])) (into {}) reagent/atom)]
     (fn []
-      [:div.row.container
-       [:div.col-md5
-        [:div.row
-         [:table {:class "pure-table"}
-          [:thead
-           [:tr
-            [:td "My Heroku Apps"]]]
-          [:tbody 
-           (for [[k v] items]
-             (do
-               [list-item id k v selections]))]]]]])))
+      [:div {:class "pure-g"}
+       (for [[k v] items]
+         (do [list-item id k v selections])
+         )])))
 
 (defn home [heroku-apps]
-  [:div 
-   [selection-list :heroku-apps "My Heroku Apps" 
+  [:div
+   [selection-list :heroku-apps "My Heroku Apps"
     heroku-apps]
    [:p]
    [:button {:type "Submit"
@@ -98,7 +91,7 @@
        :error-handler error-handler))
 
 (defn fetch-apps [api-key]
-  (GET (str "/api/apps/" api-key ) 
+  (GET (str "/api/apps/" api-key )
        :response-format :edn
        :format (edn-request-format)
        :handler fetch-apps-handler
@@ -110,14 +103,8 @@
 (defn -render-key [key]
   (reagent/render-component [render-key (key)] (.getElementById js/document "apps-list")))
 
-(defn fun-esa []
-  (GET "http://esa.local:9200"
-       :handler (fn [response] (.log js/console response)))
-)
-
 (defn start []
   (go
-    (fun-esa)
     (fetch-api-key)
     (fetch-apps (<! api-key-chan))))
 
@@ -126,4 +113,3 @@
     (reagent/render-component [loading-message]
                               (.getElementById js/document "apps-list"))
     (start)))
-
