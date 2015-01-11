@@ -27,8 +27,7 @@
                  [secretary "1.2.1"]
                  [com.cemerick/piggieback "0.1.4"]
                  [weasel "0.4.2"]
-                 [cljs-ajax "0.3.3"]
-                 [cljs-http "0.1.2" :exclusions [org.clojure/clojure]]
+                 [cljs-ajax "0.3.4"]
                  [lib-noir "0.9.5"]
                  [org.clojure/core.cache "0.6.4"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
@@ -36,9 +35,10 @@
 
   :repl-options {:init-ns reagent-example.repl}
   
-  :plugins [[lein-cljsbuild "1.0.3"]
-            [lein-ring "0.8.7"]
-            [lein-environ "1.0.0"]]
+  :plugins [[lein-cljsbuild "1.0.4"]
+            [lein-ring "0.8.13"]
+            [lein-environ "1.0.0"]
+            [lein-asset-minifier "0.2.2"]]
 
   :cljsbuild {:builds
               {:dev {:source-paths ["src/cljs"]
