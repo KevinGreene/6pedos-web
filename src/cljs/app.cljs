@@ -3,8 +3,12 @@
             [domina.css :refer [sel]]
             [ajax.core :refer [GET edn-response-format edn-request-format]]
             [reagent.core :as reagent]
-            [cljs.core.async :as async :refer [close! chan]])
-  (:require-macros [cljs.core.async.macros :refer [go]]))
+            [cljs.core.async :as async :refer [close! chan]]
+            [goog.events :as events]
+            [goog.history.EventType :as EventType])
+  (:require-macros [cljs.core.async.macros :refer [go]])
+  (:import goog.History))
+
 
 (def api-key (atom 0))
 (def api-key-chan (chan))

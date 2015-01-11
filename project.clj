@@ -26,6 +26,7 @@
                  [reagent-forms "0.3.9"]
                  [secretary "1.2.1"]
                  [com.cemerick/piggieback "0.1.4"]
+                 [selmer "0.7.9"]
                  [weasel "0.4.2"]
                  [cljs-ajax "0.3.4"]
                  [lib-noir "0.9.5"]
@@ -33,30 +34,51 @@
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
                  [ring-middleware-format "0.4.0" :exclusions [hiccup org.eclipse.jetty/jetty-http org.eclipse.jetty/jetty-continuation]]]
 
-  :repl-options {:init-ns reagent-example.repl}
   
   :plugins [[lein-cljsbuild "1.0.4"]
             [lein-ring "0.8.13"]
             [lein-environ "1.0.0"]
-            [lein-asset-minifier "0.2.2"]]
+            [lein-asset-minifier "0.2.2"]
+            [lein-figwheel "0.2.1-SNAPSHOT"]]
 
   :cljsbuild {:builds
-              {:dev {:source-paths ["src/cljs"]
-                     :compiler
-                     {:preamble ["reagent/react.js"]
-                      :pretty-print true :output-to "resources/public/js/app.js"}}
-               :prod {:source-paths ["src/cljs"]
-                      :compiler
-                      {:optimizations :advanced
-                       :output-to "resources/public/js/app.js"}}}}
+              {:app {:source-paths ["src/cljs"]
+                     :compiler {:preamble ["reagent/react.js"]
+                                :pretty-print true 
+                                :output-to "resources/public/js/app.js"
+                                :output-dir "resources/public/js/out"
+                                :optimizations :none}}}}
+
+  :ring {:handler public-pedos.core/app}
 
   :min-lein-version "2.5.0"
     
   :resource-paths ["resources"]
 
   :target-path "target/$s"
+  
+  :clean-targets ^{:protect false} ["resources/public/js"]
 
-  :main ^:skip-aot public-pedos.core
+  ;;:main ^:skip-aot public-pedos.core
+  :main public-pedos.core
+;;  :profiles {:uberjar {:aot :all}}
+  :profiles {:dev {:repl-options {:init-ns public-pedos.core
+                                  :nreple-middleware [cemerick.piggieback/wrap-cljs-repl]}
+                   :dependencies [[ring-mock "0.1.5"]
+                                  [pjstadig/humane-test-output "0.6.0"]]
 
-  :profiles {:uberjar {:aot :all}})
+                   :plugins [[lein-figwheel "0.2.1-SNAPSHOT"]]
+
+                   :injections [(require 'pjstadig.humane-test-output)
+                                (pjstadig.humane-test-output/activate!)]
+
+                   :figwheel {:http-server-root "public"
+                              :server-root 3449
+                              :css-dirs ["resources/public/css"]
+                              :ring-handler public-pedos.core/app}
+
+                   :env {:dev? true}
+
+                   :cljsbuild {:builds  {:app {:source-paths ["env/dev/cljs"]
+                                                 :compiler {:source-map true}}}}}})
 

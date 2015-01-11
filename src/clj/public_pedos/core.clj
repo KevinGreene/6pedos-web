@@ -15,6 +15,8 @@
                              [credentials :as creds])
             [clj-http.client :as http-client]
             [clojure.set :refer :all]
+            [selmer.parser :refer [render-file]]
+            [environ.core :refer [env]]
             [public-pedos.user-db :as user-db]
             [public-pedos.auth-config :as auth-config]))
 
@@ -48,21 +50,22 @@
     [:id :email])
    {:id :heroku-id}))
 
+(defn secured-index-handler [request]
+  (let [token (user-access-token request)
+        heroku-info (user-heroku-info token)
+        user-info (user-db/user-heroku-apps heroku-info)] 
+    (do
+      (if (nil? user-info)
+        (user-db/save-user-info! (assoc heroku-info :app-id (new-uuid)))
+        (render-file "templates/index.html" {:dev true})))))
+
 (defroutes app-routes
   (GET "/" [] (resource-response "index.html" {:root "public"}))
   (GET "/auth/callback" request
        (do
          (resource-response "secured.html" {:root "public"})))
   (GET "/secured" request
-       (friend/authorize #{::user}
-                         (let [token (user-access-token request)
-                               heroku-info (user-heroku-info token)
-                               user-info (user-db/user-heroku-apps heroku-info)]
-                           (do
-                           (if (nil? user-info)
-                             (user-db/save-user-info! (assoc heroku-info :app-id (new-uuid))))
-                           (resource-response "secured.html" {:root "public"}))
-                        )))
+       (friend/authorize #{::user} (secured-index-handler request)))
   (GET "/api/apps/:api-key" request
        (println (str "\nRequest: ", (get-in request [:params :api-key])))
        (friend/authorize #{::user}
