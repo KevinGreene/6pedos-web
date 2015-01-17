@@ -1,0 +1,28 @@
+.app-list-grid {
+    background: #f4f4f4; /*#1f8dd6;*/
+    margin: 0.4em;
+    padding-left: 1em;
+    padding-bottom: 5em;
+    border: 0.1em;
+    /*border-color: #10509f;*/
+    border-style: solid;
+    -webkit-user-select: none; /* Chrome/Safari */        
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+ */
+    -o-user-select: none;
+    user-select: none;
+    cursor: pointer;
+}
+
+.app-list-check {
+    margin-left: 2em;
+}
+
+.fa-icon-green {
+    color: green;
+}
+
+.fa-icon-red {
+    color: #e43136;
+}
+

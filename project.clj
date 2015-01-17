@@ -63,7 +63,7 @@
   :main public-pedos.core
 ;;  :profiles {:uberjar {:aot :all}}
   :profiles {:dev {:repl-options {:init-ns public-pedos.core
-                                  :nreple-middleware [cemerick.piggieback/wrap-cljs-repl]}
+                                  :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
                    :dependencies [[ring-mock "0.1.5"]
                                   [pjstadig/humane-test-output "0.6.0"]]
 
