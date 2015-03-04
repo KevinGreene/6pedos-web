@@ -21,3 +21,10 @@
 
 (defn set-connection! []
   (cm/set-connection! conn))
+
+(defn find-apps-for [app-id]
+  (cm/fetch-one :user_heroku_apps :where {:app-id app-id}))
+
+
+(defn save-apps-for [app-id apps]
+  (cm/update! :user_heroku_apps ))

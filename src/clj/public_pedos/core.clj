@@ -59,6 +59,14 @@
         (user-db/save-user-info! (assoc heroku-info :app-id (new-uuid)))
         (render-file "templates/index.html" {:dev true})))))
 
+(defn api-key-handler [request]
+  (let [token (user-access-token request)
+        heroku-info (user-heroku-info token)
+        user-info (user-db/user-heroku-apps heroku-info)]
+    (if (not (nil? user-info))
+      (edn (user-db/user-api-key user-info))
+      (edn nil))))
+
 (defroutes app-routes
   (GET "/" [] (resource-response "index.html" {:root "public"}))
   (GET "/auth/callback" request
@@ -67,18 +75,11 @@
   (GET "/secured" request
        (friend/authorize #{::user} (secured-index-handler request)))
   (GET "/api/apps/:api-key" request
-       (println (str "\nRequest: ", (get-in request [:params :api-key])))
        (friend/authorize #{::user}
                          (do 
                            (edn (:body (list-apps (user-access-token request)))))))
   (GET "/api/key", request
-       (friend/authorize #{::user}
-                         (let [token (user-access-token request)
-                               heroku-info (user-heroku-info token)
-                               user-info (user-db/user-heroku-apps heroku-info)]
-                           (if (not (nil? user-info))
-                             (edn (user-db/user-api-key user-info))
-                             (edn nil)))))
+       (friend/authorize #{::user} (api-key-handler request)))
   (friend/logout (ANY "/logout" request (ring.util.response/redirect "/")))
   (route/resources "/"))
 
