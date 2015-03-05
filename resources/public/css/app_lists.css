@@ -2,7 +2,8 @@
     background: #f4f4f4; /*#1f8dd6;*/
     margin: 0.4em;
     padding-left: 1em;
-    padding-bottom: 5em;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
     border: 0.1em;
     /*border-color: #10509f;*/
     border-style: solid;
@@ -15,7 +16,7 @@
 }
 
 .app-list-check {
-    margin-left: 2em;
+    margin: 0.83em 0em;
 }
 
 .fa-icon-green {

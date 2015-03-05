@@ -32,15 +32,11 @@
             (set-value! id (->> @selections
                                 (filter second)
                                 (map first))))]
-    [:div {:class "pure-u-1 pure-u-md-1-3 app-list-grid" :on-click handle-click!}
-     [:p
-      {:on-click handle-click!}     
-      [:h4 {:on-click handle-click!}
-       v]
-      [:div {:class "app-list-check"} 
-       [:i {:class (str (if (k @selections) "fa fa-icon-green fa-check fa-2x" "fa fa-icon-red fa-close fa-2x"))}]]
-      ]
-      
+    [:div {:class "pure-u-1 pure-u-md-1-2 app-list-grid" :on-click handle-click!}
+     [:h2 {:class "pure-u-md-3-4" :on-click handle-click!}
+      v]
+     [:div {:class "app-list-check pure-u-md-1-4"} 
+      [:i {:class (str (if (k @selections) "fa fa-icon-green fa-check fa-2x" "fa fa-icon-red fa-close fa-2x"))}]]
      ]))
 
 (defn selection-list [id label items]
